@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MIN_WIDTH=8
+MIN_WIDTH=10
 cc='#'
 width=80
 fill=' '
@@ -13,6 +13,10 @@ while getopts :c:w:s:f: FLAG; do
     case $FLAG in
         c)
             cc=$OPTARG
+            if (( ${#cc} != 1)); then
+                echo "-c : must be a single character"
+                exit 1;
+            fi
             ;;
         w)
             width=$OPTARG
@@ -26,6 +30,10 @@ while getopts :c:w:s:f: FLAG; do
             ;;
         f)
             fill=$OPTARG
+            if (( ${#fill} != 1)); then
+                echo "-f : must be a single character"
+                exit 1;
+            fi
             ;;
         \?)
             usage
@@ -45,37 +53,27 @@ if [ ! "$str" ]; then
 fi
 
 
-
-
+str=`echo "$str" | tr ' ' 'ꌴ'`
 
 seq -f $cc -s '' $width; echo
 
 m=$(($width-8))
-line=`seq -f "$fill" -s '' $(($m-2))`'  '
+line=`seq -f "$fill" -s '' $(($m))`
 
-TMPIFS="$IFS"
-IFS=$"\n"
 
-y=(${str})
-
-IFS="$TMPIFS"
-
-for j in $y; do
+while read -r j; do
     q=$((${#j}/$m))
     r=$((${#j}%$m))
+
     if [ $r -gt 0 ]; then
         q=$(($q+1))
     fi
 
     for i in `seq $q`; do
         x=${j:$(($(($i-1))*$m)):$m}
-        printf "$cc$cc  %s  %s$cc$cc\n" "${j:$(($(($i-1))*$m)):$m}" "${line:${#x}}"
+        printf "$cc$cc  %s  %s$cc$cc\n" "${j:$(($(($i-1))*$m)):$m}" "${line:${#x}}" | tr 'ꌴ' ' '
     done
+done <<< "$str"
 
-done
 
 seq -f $cc -s '' $width; echo
-
-
-
-

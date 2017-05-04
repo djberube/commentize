@@ -1,4 +1,5 @@
 ## Usage
+### basic usage
 ```
 commentize -s 'Hello world'
 
@@ -11,9 +12,28 @@ commentize -s 'Hello world'
 ################################################################################
 ```
 
+### apply options
+```
+commentize  -f '.' -c '.' -w 100 -s 'Author : ekcode
+Date : 4 May 2017
+Description : Generate rectangle comments.
+Version : 1.0'
+```
+
+### Output
+```
+....................................................................................................
+..  Author : ekcode  ...............................................................................
+..  Date : 4 May 2017  .............................................................................
+..  Description : Generate rectangle comments.  ....................................................
+..  Version : 1.0  .................................................................................
+....................................................................................................
+```
+
 ### Options
-| Option  | Description       | Default value      |
-| ------- | ----------------- | ------------------ |
-| `-c`    | comment character | `#`                |
-| `-w`    | width             | `80`               |
-| `-s`    | text to insert    | (no default value) |
+| Option  | Description            | Default value      |
+| ------- | ---------------------- | ------------------ |
+| `-c`    | comment character      | `#`                |
+| `-w`    | width                  | `80`               |
+| `-s`    | text to insert         | (no default value) |
+| `-f`    | fill instead space     | `(space)`          |
