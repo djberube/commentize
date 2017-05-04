@@ -1,11 +1,12 @@
 #!/bin/bash
 
+MIN_WIDTH=8
 cc='#'
 width=80
 fill=' '
 
 usage() {
-    echo 'usage: commentize -c [comment character] -w [width] -f [fill character] -s [string to commentize]'
+    echo "usage: commentize -c [comment character] -w [width, greater than $MIN_WIDTH] -f [fill character] -s [string to commentize]"
 }
 
 while getopts :c:w:s:f: FLAG; do
@@ -15,6 +16,10 @@ while getopts :c:w:s:f: FLAG; do
             ;;
         w)
             width=$OPTARG
+            if [ $width -le $MIN_WIDTH ]; then
+                usage
+                exit 1
+            fi
             ;;
         s)
             str=$OPTARG
@@ -40,20 +45,37 @@ if [ ! "$str" ]; then
 fi
 
 
+
+
+
+seq -f $cc -s '' $width; echo
+
 m=$(($width-8))
-q=$((${#str}/$m))
-r=$((${#str}%$m))
+line=`seq -f "$fill" -s '' $(($m-2))`'  '
 
-if [ $r -gt 0 ]; then
-    q=$(($q+1))
-fi
+TMPIFS="$IFS"
+IFS=$"\n"
 
-seq -f $cc -s '' $width; echo
-line=`seq -f "$fill" -s '' $m`
+y=(${str})
 
-for i in `seq $q`; do
-    x=${str:$(($(($i-1))*$m)):$m}
-    printf "$cc$cc  %s  %s$cc$cc\n" "${str:$(($(($i-1))*$m)):$m}" "${line:${#x}}"
+IFS="$TMPIFS"
+
+for j in $y; do
+    q=$((${#j}/$m))
+    r=$((${#j}%$m))
+    if [ $r -gt 0 ]; then
+        q=$(($q+1))
+    fi
+
+    for i in `seq $q`; do
+        x=${j:$(($(($i-1))*$m)):$m}
+        printf "$cc$cc  %s  %s$cc$cc\n" "${j:$(($(($i-1))*$m)):$m}" "${line:${#x}}"
+    done
+
 done
+
 seq -f $cc -s '' $width; echo
+
+
+
 
