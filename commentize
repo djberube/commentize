@@ -2,12 +2,13 @@
 
 cc='#'
 width=80
+fill=' '
 
 usage() {
-    echo 'usage: commentize -c [comment character] -w [width] -s [string to commentize]'
+    echo 'usage: commentize -c [comment character] -w [width] -f [fill character] -s [string to commentize]'
 }
 
-while getopts :c:w:s: FLAG; do
+while getopts :c:w:s:f: FLAG; do
     case $FLAG in
         c)
             cc=$OPTARG
@@ -18,9 +19,8 @@ while getopts :c:w:s: FLAG; do
         s)
             str=$OPTARG
             ;;
-        h)
-            echo "-c " 
-            exit 1
+        f)
+            fill=$OPTARG
             ;;
         \?)
             usage
@@ -34,7 +34,7 @@ while getopts :c:w:s: FLAG; do
 done
 
 
-if [ ! $str ]; then
+if [ ! "$str" ]; then
     usage
     exit 1
 fi
@@ -49,11 +49,11 @@ if [ $r -gt 0 ]; then
 fi
 
 seq -f $cc -s '' $width; echo
-line=`seq -f ' ' -s '' $m`
+line=`seq -f "$fill" -s '' $m`
 
 for i in `seq $q`; do
     x=${str:$(($(($i-1))*$m)):$m}
-    printf "$cc$cc  %s %s $cc$cc\n" "${str:$(($(($i-1))*$m)):$m}" "${line:${#x}}"
+    printf "$cc$cc  %s  %s$cc$cc\n" "${str:$(($(($i-1))*$m)):$m}" "${line:${#x}}"
 done
 seq -f $cc -s '' $width; echo
 
