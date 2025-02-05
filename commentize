@@ -46,20 +46,16 @@ while getopts :c:w:s:f: FLAG; do
     esac
 done
 
-
 if [ ! "$str" ]; then
-    usage
-    exit 1
+    str=$(cat)
 fi
-
 
 str=`echo "$str" | tr ' ' 'ꌴ'`
 
-seq -f $cc -s '' $width; echo
+printf "%${width}s\n" | tr ' ' "$cc"
 
 m=$(($width-8))
-line=`seq -f "$fill" -s '' $(($m))`
-
+line=`printf "%${m}s" | tr ' ' "$fill"`
 
 while read -r j; do
     q=$((${#j}/$m))
@@ -75,5 +71,4 @@ while read -r j; do
     done
 done <<< "$str"
 
-
-seq -f $cc -s '' $width; echo
+printf "%${width}s\n" | tr ' ' "$cc"

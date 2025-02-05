@@ -1,0 +1,44 @@
+#!/bin/bash
+
+MIN_WIDTH=10
+cc='#'
+width=80
+
+usage() {
+    echo "usage: uncommentize -c [comment character] -w [width, greater than $MIN_WIDTH]"
+}
+
+while getopts :c:w: FLAG; do
+    case $FLAG in
+        c)
+            cc=$OPTARG
+            if (( ${#cc} != 1)); then
+                echo "-c : must be a single character"
+                exit 1;
+            fi
+            ;;
+        w)
+            width=$OPTARG
+            if [ $width -le $MIN_WIDTH ]; then
+                usage
+                exit 1
+            fi
+            ;;
+        \?)
+            usage
+            exit 1
+            ;;
+        *)
+            usage
+            exit 1
+            ;;
+    esac
+done
+
+input=$(cat)
+
+# Remove comment characters and spaces from start and end of each line
+input=$(echo "$input" | sed "/^${cc}*$/d" | sed "s/^${cc}${cc}* *//g" | sed "s/  *${cc}${cc}$//g")
+
+# Output the cleaned text
+echo "$input"
